@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parent Portal - Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .btn-primary {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #218838;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        .filters {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .filter-group label {
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-filter {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-clear {
+            background: #6c757d;
+            color: white;
+        }
+
+        .children-section {
+            display: grid;
+            gap: 20px;
+        }
+
+        .child-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .child-header {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .child-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .child-stats {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .attendance-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .attendance-table th,
+        .attendance-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .attendance-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .status-present {
+            background: #d4edda;
+            color: #155724;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .status-absent {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .status-excused {
+            background: #fff3cd;
+            color: #856404;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border-left: 4px solid #dc3545;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .attendance-table {
+                font-size: 14px;
+            }
+
+            .attendance-table th,
+            .attendance-table td {
+                padding: 8px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <h1>Parent Portal Dashboard</h1>
+            <div class="header-buttons">
+                <button class="btn btn-secondary" onclick="changePassword()">Change Password</button>
+                <button class="btn btn-secondary" onclick="logout()">Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="filters">
+            <div class="filter-grid">
+                <div class="filter-group">
+                    <label for="childFilter">Child</label>
+                    <select id="childFilter">
+                        <option value="">All Children</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="statusFilter">Status</label>
+                    <select id="statusFilter">
+                        <option value="">All Statuses</option>
+                        <option value="absent">Absent</option>
+                        <option value="late">Late</option>
+                        <option value="left">Left</option>
+                        <option value="excused">Excused</option>
+                        <option value="unexcused">Unexcused</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="dateFrom">Date From</label>
+                    <input type="date" id="dateFrom">
+                </div>
+                
+                <div class="filter-group">
+                    <label for="dateTo">Date To</label>
+                    <input type="date" id="dateTo">
+                </div>
+            </div>
+            
+            <div class="filter-buttons">
+                <button class="btn btn-filter" onclick="applyFilters()">Apply Filters</button>
+                <button class="btn btn-clear" onclick="clearFilters()">Clear Filters</button>
+            </div>
+        </div>
+
+        <div id="loadingSection" class="loading">
+            <div class="spinner"></div>
+            <div>Loading attendance data...</div>
+        </div>
+
+        <div id="errorSection" class="error-message" style="display: none;"></div>
+
+        <div id="childrenSection" class="children-section" style="display: none;">
+            <!-- Children cards will be populated here -->
+        </div>
+    </div>
+
+    <script>
+        // IMPORTANT: Replace this URL with your actual Google Apps Script web app URL
+        const API_URL = 'https://script.google.com/macros/s/AKfycbw9aLariOSyF4gAbhx6NNBhrh6DiGt9dcx79kKc6vFn31ajh5EFeRGD-O9FasrKZ3cD/exec';
+        
+        let allAttendanceData = [];
+        let filteredData = [];
+
+        // Check authentication on page load
+        window.addEventListener('load', function() {
+            const sessionToken = localStorage.getItem('sessionToken');
+            if (!sessionToken) {
+                window.location.href = 'index.html';
+                return;
+            }
+            loadAttendanceData();
+        });
+
+        async function loadAttendanceData() {
+            const sessionToken = localStorage.getItem('sessionToken');
+            
+            try {
+                showLoading(true);
+                
+                const formData = new FormData();
+                formData.append('action', 'getAttendance');
+                formData.append('sessionToken', sessionToken);
+
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    allAttendanceData = result.data;
+                    filteredData = [...allAttendanceData];
+                    populateChildFilter();
+                    displayAttendanceData();
+                } else {
+                    showError(result.message || 'Failed to load attendance data');
+                    if (result.message.includes('session')) {
+                        logout();
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading attendance:', error);
+                showError('Connection error. Please try again.');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        function populateChildFilter() {
+            const childFilter = document.getElementById('childFilter');
+            childFilter.innerHTML = '<option value="">All Children</option>';
+            
+            allAttendanceData.forEach(child => {
+                const option = document.createElement('option');
+                option.value = child.childName;
+                option.textContent = child.childName;
+                childFilter.appendChild(option);
+            });
+        }
+
+        function displayAttendanceData() {
+            const childrenSection = document.getElementById('childrenSection');
+            childrenSection.innerHTML = '';
+
+            if (filteredData.length === 0) {
+                childrenSection.innerHTML = '<div class="no-data">No attendance data found.</div>';
+                childrenSection.style.display = 'block';
+                return;
+            }
+
+            filteredData.forEach(child => {
+                const childCard = createChildCard(child);
+                childrenSection.appendChild(childCard);
+            });
+
+            childrenSection.style.display = 'block';
+        }
+
+        function createChildCard(child) {
+            const card = document.createElement('div');
+            card.className = 'child-card';
+
+            const summary = child.summary || {};
+
+            card.innerHTML = `
+                <div class="child-header">
+                    <div class="child-name">${child.childName}</div>
+                    <div class="child-stats" style="font-size: 16px; margin-top: 10px;">
+                        <strong>Attendance Summary:</strong><br>
+                        <span style="color: #333;">Absent:</span><span style="background: #fff3cd; color: #856404; padding: 2px 6px; border-radius: 3px; margin-right: 8px;">${summary.absentExcused || 0}E</span>
+                        <span style="background: #f8d7da; color: #721c24; padding: 2px 6px; border-radius: 3px; margin-right: 8px;">${summary.absentUnexcused || 0}U</span>
+                        | <span style="color: #333;">Late:</span><span style="background: #fff3cd; color: #856404; padding: 2px 6px; border-radius: 3px; margin-right: 8px;"> ${summary.lateExcused || 0}E</span>
+                        <span style="background: #f8d7da; color: #721c24; padding: 2px 6px; border-radius: 3px; margin-right: 8px;">${summary.lateUnexcused || 0}U</span>
+                        | <span style="color: #333;">Left:</span><span style="background: #fff3cd; color: #856404; padding: 2px 6px; border-radius: 3px; margin-right: 8px;">${summary.leftExcused || 0}E</span>
+                        <span style="background: #f8d7da; color: #721c24; padding: 2px 6px; border-radius: 3px; margin-right: 8px;">${summary.leftUnexcused || 0}U</span>
+                        | <strong>Total Unexcused Hours:</strong> <span style="background: #f8d7da; color: #721c24; padding: 2px 6px; border-radius: 3px;">${summary.unexcusedHours || 0}</span>
+                        ${child.error ? `<br><span style="color: #dc3545;">⚠️ ${child.error}</span>` : ''}
+                    </div>
+                </div>
+                <div class="table-container">
+                    ${createAttendanceTable(child.records || [])}
+                </div>
+            `;
+
+            return card;
+        }
+
+        function createAttendanceTable(records) {
+            if (records.length === 0) {
+                return '<div class="no-data">No attendance issues found for this child.</div>';
+            }
+
+            const tableRows = records.map(record => {
+                const rowClass = record.isFullyExcused ? 'status-excused' : 'status-absent';
+                return `
+                    <tr>
+                        <td>${record.date}</td>
+                        <td><span class="${rowClass}">${record.status}</span></td>
+                        <td>${record.time || '-'}</td>
+                        <td>${record.comment || '-'}</td>
+                    </tr>
+                `;
+            }).join('');
+
+            return `
+                <table class="attendance-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Issue</th>
+                            <th>Time</th>
+                            <th>Comment</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${tableRows}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        function getStatusClass(status) {
+            const statusLower = status.toLowerCase();
+            if (statusLower.includes('present') || statusLower.includes('ontime')) {
+                return 'status-present';
+            } else if (statusLower.includes('absent')) {
+                return 'status-absent';
+            } else if (statusLower.includes('excused')) {
+                return 'status-excused';
+            }
+            return '';
+        }
+
+        function applyFilters() {
+            const childFilter = document.getElementById('childFilter').value;
+            const statusFilter = document.getElementById('statusFilter').value;
+            const dateFrom = document.getElementById('dateFrom').value;
+            const dateTo = document.getElementById('dateTo').value;
+
+            filteredData = allAttendanceData.map(child => {
+                // Filter by child name
+                if (childFilter && child.childName !== childFilter) {
+                    return null;
+                }
+
+                // Filter records
+                let filteredRecords = [...child.records];
+
+                // Filter by status
+                if (statusFilter) {
+                    filteredRecords = filteredRecords.filter(record => {
+                        const statusLower = record.status.toLowerCase();
+                        switch(statusFilter) {
+                            case 'absent':
+                                return statusLower === 'absent';
+                            case 'late':
+                                return statusLower === 'late';
+                            case 'left':
+                                return statusLower === 'left early';
+                            case 'excused':
+                                return record.isFullyExcused === true;
+                            case 'unexcused':
+                                return record.isFullyExcused === false;
+                            default:
+                                return true;
+                        }
+                    });
+                }
+
+                // Filter by date range
+                if (dateFrom || dateTo) {
+                    filteredRecords = filteredRecords.filter(record => {
+                        const recordDate = new Date(record.date);
+                        const fromDate = dateFrom ? new Date(dateFrom) : null;
+                        const toDate = dateTo ? new Date(dateTo) : null;
+
+                        if (fromDate && recordDate < fromDate) return false;
+                        if (toDate && recordDate > toDate) return false;
+                        return true;
+                    });
+                }
+
+                return {
+                    ...child,
+                    records: filteredRecords
+                };
+            }).filter(child => child !== null);
+
+            displayAttendanceData();
+        }
+
+        function clearFilters() {
+            document.getElementById('childFilter').value = '';
+            document.getElementById('statusFilter').value = '';
+            document.getElementById('dateFrom').value = '';
+            document.getElementById('dateTo').value = '';
+            
+            filteredData = [...allAttendanceData];
+            displayAttendanceData();
+        }
+
+        function changePassword() {
+            window.location.href = 'change-password.html';
+        }
+
+        function logout() {
+            localStorage.removeItem('sessionToken');
+            localStorage.removeItem('children');
+            window.location.href = 'index.html';
+        }
+
+        function showLoading(show) {
+            document.getElementById('loadingSection').style.display = show ? 'block' : 'none';
+            document.getElementById('childrenSection').style.display = show ? 'none' : 'block';
+        }
+
+        function showError(message) {
+            const errorSection = document.getElementById('errorSection');
+            errorSection.textContent = message;
+            errorSection.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
