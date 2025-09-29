@@ -412,12 +412,12 @@
                     <div class="child-name">${child.childName}</div>
                     <div class="child-stats" style="font-size: 16px; margin-top: 10px;">
                         <strong>Attendance Summary:</strong><br>
-                        <span style="color: #333;">Absent:</span><span style="background: #fff3cd; color: #856404; padding: 2px 6px; border-radius: 3px; margin-right: 8px;">${summary.absentExcused || 0}E</span>
-                        <span style="background: #f8d7da; color: #721c24; padding: 2px 6px; border-radius: 3px; margin-right: 8px;">${summary.absentUnexcused || 0}U</span>
-                        | <span style="color: #333;">Late:</span><span style="background: #fff3cd; color: #856404; padding: 2px 6px; border-radius: 3px; margin-right: 8px;"> ${summary.lateExcused || 0}E</span>
-                        <span style="background: #f8d7da; color: #721c24; padding: 2px 6px; border-radius: 3px; margin-right: 8px;">${summary.lateUnexcused || 0}U</span>
-                        | <span style="color: #333;">Left:</span><span style="background: #fff3cd; color: #856404; padding: 2px 6px; border-radius: 3px; margin-right: 8px;">${summary.leftExcused || 0}E</span>
-                        <span style="background: #f8d7da; color: #721c24; padding: 2px 6px; border-radius: 3px; margin-right: 8px;">${summary.leftUnexcused || 0}U</span>
+                        <span style="color: #333;">Absent:</span><span style="background: #fff3cd; color: #856404; padding: 2px 6px; border-radius: 3px; margin-right: 8px;">${summary.absentExcused || 0}Excused</span>
+                        <span style="background: #f8d7da; color: #721c24; padding: 2px 6px; border-radius: 3px; margin-right: 8px;">${summary.absentUnexcused || 0}Unexcused</span>
+                        | <span style="color: #333;">Late:</span><span style="background: #fff3cd; color: #856404; padding: 2px 6px; border-radius: 3px; margin-right: 8px;"> ${summary.lateExcused || 0}Excused</span>
+                        <span style="background: #f8d7da; color: #721c24; padding: 2px 6px; border-radius: 3px; margin-right: 8px;">${summary.lateUnexcused || 0}Unexcused</span>
+                        | <span style="color: #333;">Left:</span><span style="background: #fff3cd; color: #856404; padding: 2px 6px; border-radius: 3px; margin-right: 8px;">${summary.leftExcused || 0}Excused</span>
+                        <span style="background: #f8d7da; color: #721c24; padding: 2px 6px; border-radius: 3px; margin-right: 8px;">${summary.leftUnexcused || 0}Unexcused</span>
                         | <strong>Total Unexcused Hours:</strong> <span style="background: #f8d7da; color: #721c24; padding: 2px 6px; border-radius: 3px;">${summary.unexcusedHours || 0}</span>
                         ${child.error ? `<br><span style="color: #dc3545;">⚠️ ${child.error}</span>` : ''}
                     </div>
@@ -566,4 +566,5 @@
         }
     </script>
 </body>
+
 </html>
